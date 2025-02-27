@@ -8,9 +8,10 @@
         document.addEventListener("DOMContentLoaded", async function () {
             document.body.innerHTML = "<p>Redirecting to README.md... Please wait.</p>";
 
-            const urlParts = window.location.pathname.split('/');
-            const user = urlParts[1];  // GitHub username/org
-            const repo = urlParts[2];  // Repository name
+            // 🔥 Extract GitHub username and repo from the GitHub Pages URL
+            const hostParts = window.location.hostname.split('.');
+            const user = hostParts[0];  // GitHub username (e.g., CodeAssistHu)
+            const repo = window.location.pathname.split('/')[1];  // Repo name from URL path
 
             if (user && repo) {
                 await redirectToReadme(user, repo);
@@ -23,9 +24,10 @@
             try {
                 const branches = ["main", "master"];
                 for (const branch of branches) {
-                    let response = await fetch(`https://github.com/${user}/${repo}/blob/${branch}/README.md`);
+                    const readmeURL = `https://github.com/${user}/${repo}/blob/${branch}/README.md`;
+                    let response = await fetch(readmeURL);
                     if (response.ok) {
-                        window.location.replace(`https://github.com/${user}/${repo}/blob/${branch}/README.md`);
+                        window.location.replace(readmeURL);
                         return;
                     }
                 }
@@ -40,4 +42,3 @@
     <p>If not redirected, <a id="manualLink" href="#">click here</a>.</p>
 </body>
 </html>
-
